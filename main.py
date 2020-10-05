@@ -7,24 +7,17 @@ import plotly.io as pio
 
 URL = "https://en.wikipedia.org/wiki/Natural_language_processing"
 
-page = request.urlopen(URL)
+page = request.urlopen(URL).read()
 
-html_plain = page.read()
-soup = BeautifulSoup(html_plain, 'html.parser')
-soup_text = soup.get_text(strip=True)
-ready_text = soup_text.lower()
+soup = BeautifulSoup(page, 'html.parser').get_text(strip=True).lower()
 
-tokens = [i for i in ready_text.split()]
+tokens = [i for i in soup.split()]
 stop_words = stopwords.words('english')
 clean_tokens = [i for i in tokens if i not in stop_words]
 
 freq = nltk.FreqDist(clean_tokens)
 
-high_freq = dict()
-
-for key, val in freq.items():
-    if (val > 10):
-        high_freq[key] = val
+high_freq = {i: x for i, x in freq.items() if x > 10}
 
 fig = dict({
     "data": [{
